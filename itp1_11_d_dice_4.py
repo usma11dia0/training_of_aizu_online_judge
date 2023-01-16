@@ -6,6 +6,9 @@
 # back：奥の面
 # bottom：下の面
 
+from typing import Type
+import sys
+
 # classの定義
 class Dice:
     # 初期値
@@ -84,8 +87,8 @@ class Dice:
         current_face_dict = self.face_dict.copy()
         self.face_dict_all_top.append(current_face_dict)
 
-        # それぞれ一回ずつ'NSWE','NN'に回転 (topが2,3,4,5と6)
-        for s in ["N", "S", "W", "E", "NN"]:
+        # それぞれ一回ずつ'NSWE','EE'に回転 (topが2,3,4,5と6)
+        for s in ["N", "S", "W", "E", "EE"]:
             self.face_dict = current_face_dict.copy()
             self.face_dict_all_top.append(self.roll(s))
 
@@ -104,13 +107,32 @@ class Dice:
                 return face_dict["right"]
 
 
+# 関数定義
+def is_same_dice(dice_1: Type[Dice], dice_2: Type[Dice]) -> str:
+    for dice_1_face_dict in dice_1.face_dict_all:
+        for dice_2_face_dict in dice_2.face_dict_all:
+            if dice_1_face_dict == dice_2_face_dict:
+                return "Yes"
+    return "No"
+
+
 # 入力データの取得
-face_list = list(map(int, input().split()))
-q = int(input())
-top_front_list = [list(map(int, input().split())) for _ in range(0, q)]
+n = int(input())
+dice_face_list = [list(map(int, input().split())) for _ in range(0, n)]
 
-dice = Dice(face_list)
-dice.face_all()
+dice_list = []
+for dice_face in dice_face_list:
+    dice = Dice(dice_face)
+    dice_list.append(dice)
 
-for top, front in top_front_list:
-    print(dice.right_face(top, front))
+# diceの面の組み合わせを全列挙
+for dice in dice_list:
+    dice.face_all()
+
+for i in range(0, len(dice_list) - 1):
+    for j in range(i + 1, len(dice_list)):
+        result = is_same_dice(dice_list[i], dice_list[j])
+        if result == "Yes":
+            print("No")
+            sys.exit(0)
+print("Yes")
