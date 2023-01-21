@@ -12,12 +12,6 @@ for mark, num in have_cards:
     card_dict[mark].add(num)
 
 # 持っていないカードをリスト内包表記で出力
-# for mark in card_marks:
-#     for num in range(1, 14):
-#         if str(num) not in card_dict[mark]:
-#             no_card_dict[mark].add(num)
-
-
 no_card_dict = [
     [mark, num]
     for mark in card_marks
@@ -25,6 +19,5 @@ no_card_dict = [
     if str(num) not in card_dict[mark]
 ]
 
-print(no_card_dict)
-
-# no_card_list = [         for mark in card_marks]
+for result in no_card_dict:
+    print(*result)
