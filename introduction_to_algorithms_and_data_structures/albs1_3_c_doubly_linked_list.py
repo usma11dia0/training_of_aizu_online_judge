@@ -1,5 +1,10 @@
+from __future__ import annotations
+
+
 class Node:
-    def __init__(self, key: int, prev_node=None, next_node=None) -> None:
+    def __init__(
+        self, key: int, prev_node: Node = None, next_node: Node = None
+    ) -> None:
         self.key = key
         self.prev = prev_node
         self.next = next_node
@@ -25,12 +30,38 @@ class DoublyLinkedList:
     # キーxを持つ最初のノードを連結リストから削除する。そのような要素が存在しない場合は何もしない。
     def delete(self, key: int) -> None:
         current_node = self.head
-        # キーxを持つノードを抽出(=current_node)し、ループを抜ける
+        # キーxを持つノード(current_node)が先頭にある時
+        # 先頭で、かつ他ノードがない時
+        if current_node and current_node.key == key:
+            if current_node.next == None:
+                current_node = None
+                self.head = None
+                return
+            #  current_nodeが先頭で、かつ他ノードがある時
+            #  HEAD(current_node) ⇔ next_node から
+            #  HEAD(next_node) へと変更
+            else:
+                current_node.prev == None
+                next_node = current_node.next
+                next_node.prev = None
+                current_node = None
+                self.head = next_node
+                return
+        # キーxを持つノード(current_node)が先頭以外にある時
+        # キーxを持つノード(current_node)を抽出
         while current_node and current_node.key != key:
             current_node = current_node.next
-        if current_node == None:
+        if current_node is None:
             return
-        # current_nodeが真ん中にある時
+        # キーxを持つノード(current_node)が末尾にある時
+        # prev_node ⇔ current_node ⇔ None から
+        # prev_node ⇔ None　へと変更
+        if current_node.next == None:
+            prev_node = current_node.prev
+            prev_node.next = None
+            current_node = None
+            return
+        # キーxを持つノード(current_node)が真ん中にある時
         # prev_node ⇔ current_node ⇔ next_node から
         # prev_node ⇔ next_node　へと変更
         else:
@@ -50,10 +81,10 @@ class DoublyLinkedList:
                 current_node = None
                 self.head = None
                 return
+            #  current_nodeの他にもノードがある場合
+            #  HEAD(current_node) ⇔ next_node から
+            #  HEAD(next_node) へと変更
             else:
-                #  current_nodeの他にもノードがある場合
-                #  HEAD(current_node) ⇔ next_node から
-                #  HEAD(next_node) へと変更
                 next_node = current_node.next
                 next_node.prev = None
                 current_node = None
@@ -64,7 +95,7 @@ class DoublyLinkedList:
     def deleteLast(self) -> None:
         current_node = self.head
         # 末尾のノードを抽出(=current_node)し、ループを抜ける
-        while current_node:
+        while current_node.next:
             current_node = current_node.next
         # current_nodeが末尾にある時
         # prev_node ⇔ current_node ⇔ None から
@@ -77,7 +108,7 @@ class DoublyLinkedList:
     def print_key(self) -> None:
         current_node = self.head
         while current_node:
-            print(current_node.key)
+            print(current_node.key, end=" ")
             current_node = current_node.next
 
 
@@ -97,3 +128,5 @@ for command in command_list:
         doubly_linked_list.deleteFirst()
     elif command[0] == "deleteLast":
         doubly_linked_list.deleteLast()
+
+doubly_linked_list.print_key()
