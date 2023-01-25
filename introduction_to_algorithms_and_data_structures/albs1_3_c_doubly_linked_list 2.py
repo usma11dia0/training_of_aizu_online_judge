@@ -1,4 +1,5 @@
 # from __future__ import annotations
+import sys
 
 
 class Node:
@@ -96,12 +97,20 @@ class DoublyLinkedList:
 
     # 連結リストの末尾の要素を削除する
     def deleteLast(self) -> None:
+        current_node = self.head
+        # 　要素がHEADのみの場合
+        if current_node.next == None:
+            current_node = None
+            self.head = None
+            return
+
         #  prev_node  ⇔ current_node ⇔ self.tail から
         #  prev_node ⇔ self.tail へと変更
-        current_node = self.tail
-        self.tail = current_node.prev
-        current_node.prev.next = None
-        current_node = None
+        else:
+            current_node = self.tail
+            self.tail = current_node.prev
+            current_node.prev.next = None
+            current_node = None
 
     # 連結リストのキーを出力する
     def print_key(self) -> None:
@@ -115,20 +124,37 @@ class DoublyLinkedList:
 
 
 # 入力データの取得
-n = int(input())
-command_list = [list(map(str, input().split())) for _ in range(0, n)]
+# input = sys.stdin.readline
+# n = int(input())
+# command_list = [list(map(str, input().split())) for _ in range(0, n)]
 
-# 初期値の設定
+# # 初期値の設定
+# doubly_linked_list = DoublyLinkedList()
+
+# for command in command_list:
+#     if command[0] == "insert":
+#         doubly_linked_list.insert(int(command[1]))
+#     elif command[0] == "delete":
+#         doubly_linked_list.delete(int(command[1]))
+#     elif command[0] == "deleteFirst":
+#         doubly_linked_list.deleteFirst()
+#     elif command[0] == "deleteLast":
+#         doubly_linked_list.deleteLast()
+
 doubly_linked_list = DoublyLinkedList()
 
-for command in command_list:
-    if command[0] == "insert":
-        doubly_linked_list.insert(int(command[1]))
-    elif command[0] == "delete":
-        doubly_linked_list.delete(int(command[1]))
-    elif command[0] == "deleteFirst":
+for i in sys.stdin:
+    if "insert" in i:
+        x = i[7:-1]
+        doubly_linked_list.insert(x)
+    elif "deleteFirst" in i:
         doubly_linked_list.deleteFirst()
-    elif command[0] == "deleteLast":
+    elif "deleteLast" in i:
         doubly_linked_list.deleteLast()
+    elif "delete" in i:
+        x = i[7:-1]
+        doubly_linked_list.delete(x)
+    else:
+        pass
 
 doubly_linked_list.print_key()
