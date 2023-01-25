@@ -11,14 +11,18 @@ class Node:
 class DoublyLinkedList:
     def __init__(self, head=None) -> None:
         self.head = head
+        self.tail = head
 
     # 先頭にキーxを持つ要素を継ぎ足す
     def insert(self, key: int) -> None:
         # キーxのノードを生成
         new_node = Node(key)
+        # リストが空の時
         if self.head == None:
             self.head = new_node
+            self.tail = new_node
             return
+        # 　リストが空でない時
         #  HEAD(old) ⇔ next_node から
         #  HEAD(new_node) ⇔ HEAD(old)  へと変更
         self.head.prev = new_node
@@ -57,6 +61,7 @@ class DoublyLinkedList:
         if current_node.next == None:
             prev_node = current_node.prev
             prev_node.next = None
+            self.tail = prev_node
             current_node = None
             return
         # キーxを持つノード(current_node)が真ん中にある時
@@ -91,20 +96,11 @@ class DoublyLinkedList:
 
     # 連結リストの末尾の要素を削除する
     def deleteLast(self) -> None:
-        current_node = self.head
-        # 末尾のノードを抽出(=current_node)し、ループを抜ける
-        while current_node.next:
-            current_node = current_node.next
-
-        # current_nodeが末尾にあり、他のノードがない時
-        if current_node.prev == None:
-            self.head = None
-            return
-        # current_nodeが末尾にあり、他のノードがある時
-        # prev_node ⇔ current_node ⇔ None から
-        # prev_node ⇔ None　へと変更
-        prev_node = current_node.prev
-        prev_node.next = None
+        #  prev_node  ⇔ current_node ⇔ self.tail から
+        #  prev_node ⇔ self.tail へと変更
+        current_node = self.tail
+        self.tail = current_node.prev
+        current_node.prev.next = None
         current_node = None
 
     # 連結リストのキーを出力する
