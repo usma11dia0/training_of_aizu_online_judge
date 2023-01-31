@@ -124,7 +124,6 @@ class DoublyLinkedList:
 
 
 # 入力データの取得
-# input = sys.stdin.readline
 # n = int(input())
 # command_list = [list(map(str, input().split())) for _ in range(0, n)]
 

@@ -26,17 +26,22 @@ for index, a in enumerate(A):
             if len(stack_puddle) == 0:
                 stack_puddle.append((start_index, horizontal_water))
             else:
-                # 水たまりを結合させるか否かを判定
-                # 暫定で格納した水たまりの('\'インデックス, 水量)を取得
-                puddle_index, puddle_water = stack_puddle.pop()
-                # 導出した同一高位水量の'\'のインデックスが、水たまりの'\'のインデックスよりも小さい場合
-                # 水たまりを結合し、結果をstack_puddleへ再格納。
-                if start_index < puddle_index:
-                    puddle_water += horizontal_water
-                    # 水たまり結合後の'\'のインデックスは、同一水量の'\'を利用
-                    stack_puddle.append((start_index, puddle_water))
+                # 導出した同一高位水量の'\'のインデックスが、既出の水たまりの'\'のインデックスよりも
+                # 大きくなる(右側にくる)まで、両者の結合を繰り返す
+                while True:
+                    # 暫定で格納した水たまりの('\'インデックス, 水量)を取得
+                    puddle_index, puddle_water = stack_puddle.pop()
+                    # 導出した同一高位水量の'\'のインデックスが、水たまりの'\'のインデックスよりも大きい場合
+                    # stack_puddleへ格納しwhileループを終了
+                    if puddle_index < start_index:
+                        stack_puddle.append((puddle_index, puddle_water))
+                        stack_puddle.append((start_index, horizontal_water))
+                        break
+                    # 導出した同一高位水量の'\'のインデックスが、水たまりの'\'のインデックスよりも小さい場合
+                    # 同一高位水量と水たまりの水量を結合し、whileループを繰り返す。
+                    elif start_index < puddle_index:
+                        horizontal_water += puddle_water
 
-print(stack_puddle)
 # 結果の出力
 sum_water = 0
 for puddle in stack_puddle:
