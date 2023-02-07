@@ -1,4 +1,4 @@
-import math
+from math import radians, cos, sin
 
 
 def create_koch_curve(n: int, p1_x: int, p1_y: int, p2_x: int, p2_y: int):
@@ -10,18 +10,21 @@ def create_koch_curve(n: int, p1_x: int, p1_y: int, p2_x: int, p2_y: int):
     t_y = (p1_y * 1) / 3 + (p1_y * 2) / 3
 
     # 2.線分を3等分する2点s,tを頂点とする正三角形(s,u,t)を作成する
-    # 線分stを90°反時計回りした線分svの頂点vを求める
-    v_x = -t_y
-    v_y = t_x
-    # 線分stと線分svを直交座標とみなして線分stを60°反時計回りさせ
-    # suベクトルを導出する
+    # 点sを原点まで平行移動させ、stと90°反時計回りさせたsvの座標をそれぞれ求める
+    s_t_x = t_x - s_x
+    s_t_y = t_y - s_y
+    s_v_x = -(t_y - s_y)
+    s_v_y = t_x - s_x
+    # stとsvを直交座標とみなして、stを60°反時計回りさせたsuの座標を求める
     # su = cos60*st + sin60*sv
-    #    = cos60(ot-os) + sin60(ov-os)
-    #    = cos60((t_x,t_y)-(s_x,s_y)) + sin60((v_x,v_y)-(s_x,s_y))
-    #    = (cos60(t_x-s_x)+sin60(v_x-s_x), cos60(t_y-s_y)+sin60(v_y-s_y))
-    u_x = math.cos(60) * (t_x - s_x) + math.sin(60) * (v_x - s_x)
-    u_y = math.cos(60) * (t_y - s_y) + math.sin(60) * (v_y - s_y)
-
+    #    = cos60((s_t_x, s_t_y)) + sin60((s_v_x, s_v_y))
+    #    = (cos60(s_t_x) + sin60(s_v_x) , cos60(s_t_y) + sin60(s_v_y))
+    s_u_x = cos(radians(60)) * s_t_x + sin(radians(60)) * s_v_x
+    s_u_y = cos(radians(60)) * s_t_y + sin(radians(60)) * s_v_y
+    # 点sを元の位置まで平行移動させ、点uの座標を導出する
+    # ou = os + su
+    u_x = s_x + s_u_x
+    u_y = s_y + s_u_y
     return s_x, s_y, t_x, t_y, u_x, u_y
 
 
