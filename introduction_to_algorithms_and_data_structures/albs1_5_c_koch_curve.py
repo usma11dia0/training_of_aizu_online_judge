@@ -27,6 +27,8 @@ def create_koch_curve(n: int, p1_x: int, p1_y: int, p2_x: int, p2_y: int):
     u_y = s_y + s_u_y
     return s_x, s_y, t_x, t_y, u_x, u_y
 
+    # 再帰処理について追記する
+
 
 # 入力データの取得
 n = int(input())
