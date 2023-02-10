@@ -1,3 +1,4 @@
+# 参考URL
 # https://judge.u-aizu.ac.jp/onlinejudge/review.jsp?rid=1572340#1
 
 # from __future__ import annotations
@@ -5,81 +6,44 @@ import sys
 
 
 class Node:
-    def __init__(self, key: int, prev_node=None, next_node=None) -> None:
+    def __init__(self, key: int, next_node=None, prev_node=None) -> None:
         self.key = key
-        self.prev = prev_node
         self.next = next_node
+        self.prev = prev_node
 
 
 class DoublyLinkedList:
     def __init__(self, head=None) -> None:
         self.head = head
         self.tail = head
+        self.body = Node(None)
+        self.body.next = self.body
+        self.body.prev = self.body
 
     # 先頭にキーxを持つ要素を継ぎ足す
     def insert(self, key: int) -> None:
         # キーxのノードを生成
-        new_node = Node(key)
-        # リストが空の時
-        if self.head == None:
-            self.head = new_node
-            self.tail = new_node
-            return
-        # 　リストが空でない時
-        #  HEAD(old) ⇔ next_node から
-        #  HEAD(new_node) ⇔ HEAD(old)  へと変更
-        self.head.prev = new_node
-        new_node.next = self.head
-        self.head = new_node
+        new_node = Node(key, self.body.next, self.body)
+        self.body.next.prev = new_node
+        self.body.next = new_node
 
     # キーxを持つ最初のノードを連結リストから削除する。そのような要素が存在しない場合は何もしない。
     def delete(self, key: int) -> None:
-        current_node = self.head
-        # キーxを持つノード(current_node)が先頭にある時
-        # 先頭で、かつ他ノードがない時
-        if current_node and current_node.key == key:
-            if current_node.next == None:
-                current_node = None
-                self.head = None
-                return
-            #  current_nodeが先頭で、かつ他ノードがある時
-            #  HEAD(current_node) ⇔ next_node から
-            #  HEAD(next_node) へと変更
-            else:
-                current_node.prev == None
-                next_node = current_node.next
-                next_node.prev = None
-                current_node = None
-                self.head = next_node
-                return
-        # キーxを持つノード(current_node)が先頭以外にある時
+        current_node = self.body.next
+
         # キーxを持つノード(current_node)を抽出
         while current_node and current_node.key != key:
             current_node = current_node.next
         if current_node is None:
-            return
-        # キーxを持つノード(current_node)が末尾にある時
-        # prev_node ⇔ current_node ⇔ None から
-        # prev_node ⇔ None　へと変更
-        if current_node.next == None:
-            prev_node = current_node.prev
-            prev_node.next = None
-            self.tail = prev_node
-            current_node = None
-            return
-        # キーxを持つノード(current_node)が真ん中にある時
-        # prev_node ⇔ current_node ⇔ next_node から
-        # prev_node ⇔ next_node　へと変更
-        else:
-            next_node = current_node.next
-            prev_node = current_node.prev
-            prev_node.next = next_node
-            next_node.prev = prev_node
-            current_node = None
-            return
+            return None
+
+        current_node.prev.next = current_node.next
+        current_node.next.prev = current_node.prev
 
     # 連結リストの先頭の要素を削除する
     def deleteFirst(self) -> None:
+        self._deleteNode(self.body.next)
+
         current_node = self.head
         if current_node:
             # current_nodeしかない場合
