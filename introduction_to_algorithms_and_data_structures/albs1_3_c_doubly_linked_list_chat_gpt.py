@@ -1,3 +1,6 @@
+# 高速化を指示
+
+
 class Node:
     def __init__(self, key, prev=None, next=None):
         self.key = key
