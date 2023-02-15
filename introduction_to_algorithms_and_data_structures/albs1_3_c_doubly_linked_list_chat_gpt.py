@@ -1,11 +1,8 @@
-# 高速化を指示
-
-
 class Node:
-    def __init__(self, key, prev=None, next=None):
+    def __init__(self, key):
         self.key = key
-        self.prev = prev
-        self.next = next
+        self.prev = None
+        self.next = None
 
 
 class DoublyLinkedList:
@@ -13,60 +10,70 @@ class DoublyLinkedList:
         self.head = None
         self.tail = None
 
-    def insert(self, key):
-        if not self.head:
-            self.head = self.tail = Node(key)
+    def insert_front(self, key):
+        new_node = Node(key)
+        if self.head is None:
+            self.head = new_node
+            self.tail = new_node
         else:
-            self.head = self.head.prev = Node(key, None, self.head)
+            new_node.next = self.head
+            self.head.prev = new_node
+            self.head = new_node
 
     def delete(self, key):
-        curr = self.head
-        while curr:
-            if curr.key == key:
-                if curr.prev:
-                    curr.prev.next = curr.next
+        current = self.head
+        while current is not None:
+            if current.key == key:
+                if current.prev is not None:
+                    current.prev.next = current.next
                 else:
-                    self.head = curr.next
-                if curr.next:
-                    curr.next.prev = curr.prev
+                    self.head = current.next
+
+                if current.next is not None:
+                    current.next.prev = current.prev
                 else:
-                    self.tail = curr.prev
-                break
-            curr = curr.next
+                    self.tail = current.prev
 
-    def deleteFirst(self):
-        if self.head:
-            self.head = self.head.next
-            if self.head:
-                self.head.prev = None
+                return
+            current = current.next
 
-    def deleteLast(self):
-        if self.tail:
-            self.tail = self.tail.prev
-            if self.tail:
-                self.tail.next = None
+    def delete_first(self):
+        if self.head is None:
+            return
+        self.head = self.head.next
+        if self.head is not None:
+            self.head.prev = None
+        else:
+            self.tail = None
 
+    def delete_last(self):
+        if self.tail is None:
+            return
+        self.tail = self.tail.prev
+        if self.tail is not None:
+            self.tail.next = None
+        else:
+            self.head = None
 
-def solve():
-    n = int(input().strip())
-    dll = DoublyLinkedList()
-    for i in range(n):
-        op = input().strip().split()
-        if op[0] == "insert":
-            dll.insert(int(op[1]))
-        elif op[0] == "delete":
-            dll.delete(int(op[1]))
-        elif op[0] == "deleteFirst":
-            dll.deleteFirst()
-        elif op[0] == "deleteLast":
-            dll.deleteLast()
-    ans = []
-    curr = dll.head
-    while curr:
-        ans.append(str(curr.key))
-        curr = curr.next
-    print(" ".join(ans))
+    def print_list(self):
+        current = self.head
+        while current is not None:
+            print(current.key, end=" ")
+            current = current.next
+        print()
 
 
-if __name__ == "__main__":
-    solve()
+# Main program
+n = int(input())
+dll = DoublyLinkedList()
+for i in range(n):
+    cmd = input().split()
+    if cmd[0] == "insert":
+        dll.insert_front(int(cmd[1]))
+    elif cmd[0] == "delete":
+        dll.delete(int(cmd[1]))
+    elif cmd[0] == "deleteFirst":
+        dll.delete_first()
+    elif cmd[0] == "deleteLast":
+        dll.delete_last()
+dll.print_list()

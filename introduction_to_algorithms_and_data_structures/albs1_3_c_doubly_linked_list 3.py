@@ -9,7 +9,7 @@ class Node:
 
 
 class DoublyLinkedList:
-    def __init__(self, head=None) -> None:
+    def __init__(self) -> None:
         self.pnt = Node(None)
         # pnt.next = head
         self.pnt.next = self.pnt
@@ -22,10 +22,9 @@ class DoublyLinkedList:
         # ノードを生成した時点でnode.nextに現HEAD, node.prevにNone(Node)を入れる)
         new_node = Node(key, self.pnt.next, self.pnt)
 
-        # pnt → old_node(旧self.pnt.next) から
-        # pnt → new_node ⇔ old_node へ
-        # self.pnt.next = Noneの時のみ、self.pnt.prevにもnew_nodeが入る。
-        # self.pnt.prevが常に末尾を指す
+        if self.pnt.next is None:  # リストが空の場合
+            self.pnt.prev = new_node
+
         self.pnt.next.prev = new_node
         self.pnt.next = new_node
 
