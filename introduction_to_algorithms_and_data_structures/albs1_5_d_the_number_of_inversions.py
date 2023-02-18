@@ -25,6 +25,7 @@ def merge_sort(arr: list) -> Tuple[list, int]:
             j += 1
             # 反転回数は、左側リストでまだ比較されず残っている要素の数
             cnt += len(left_list) - i
+    # 比較終了した時点で片方のリストに要素が残っていた場合、そのままresultに格納
     result += left_list[i:]
     result += right_list[j:]
     return result, cnt
