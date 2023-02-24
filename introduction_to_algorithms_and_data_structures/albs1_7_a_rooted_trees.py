@@ -28,12 +28,10 @@ T = {i: Node(-1, [], -1, "") for i in range(0, n)}
 for _ in range(0, n):
     node_info = list(map(int, input().split()))
 
-    # 節点番号のノードの子ノードを追記
-    T[node_info[0]].children = node_info[2:]
-
-    # 子ノードを持つ場合
+    # 子ノードの有無で場合分け
     if node_info[1] != 0:
         T[node_info[0]].type = "internal node"
+        T[node_info[0]].children = node_info[2:]
         for child in T[node_info[0]].children:
             # 節点番号のノードを親ノードとして追記
             T[child].parent = node_info[0]
@@ -44,10 +42,12 @@ for _ in range(0, n):
 for i in range(0, n):
     depth = 0
     node_id = i
+    # 初期値の-1が更新されていなければroot
     if T[node_id].parent == -1:
         T[i].depth = 0
         T[i].type = "root"
     else:
+        # rootに辿り着くまで子→親へ遡る
         while T[node_id].parent != -1:
             node_id = T[node_id].parent
             depth += 1
