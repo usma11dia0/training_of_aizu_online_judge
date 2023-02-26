@@ -30,8 +30,10 @@ for _ in range(0, n):
 
     # 子ノードの有無で場合分け
     if node_info[1] != 0:
+        # ノード_info[0]に対する処理
         T[node_info[0]].type = "internal node"
         T[node_info[0]].children = node_info[2:]
+        # ノード_info[0]の子ノードに対する処理
         for child in T[node_info[0]].children:
             # 節点番号のノードを親ノードとして追記
             T[child].parent = node_info[0]
