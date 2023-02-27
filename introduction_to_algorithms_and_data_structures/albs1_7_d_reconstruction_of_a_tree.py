@@ -1,3 +1,7 @@
+# https://qiita.com/nyankiti/items/f593765cf4aca9cc2db2
+# https://blog.ikappio.com/data-structure-tree-reconstruction-of-a-tree/
+
+
 class Node:
     def __init__(
         self,
@@ -12,24 +16,6 @@ class Node:
         self.right = right
 
 
-# 深さ優先探索(先行順巡回)
-def print_preorder(T: dict, u: int):
-    print(f" {T[u].id}", end="")
-    if T[u].left != -1:
-        print_preorder(T, T[u].left)
-    if T[u].right != -1:
-        print_preorder(T, T[u].right)
-
-
-# 深さ優先探索(中間順巡回)
-def print_inorder(T: dict, u: int):
-    if T[u].left != -1:
-        print_inorder(T, T[u].left)
-    print(f" {T[u].id}", end="")
-    if T[u].right != -1:
-        print_inorder(T, T[u].right)
-
-
 # 深さ優先探索(後行順巡回)
 def print_postorder(T: dict, u: int):
     if T[u].left != -1:
@@ -39,43 +25,57 @@ def print_postorder(T: dict, u: int):
     print(f" {T[u].id}", end="")
 
 
+def reconstruction(preorder: list, inorder: list) -> list:
+
+    # rootの導出
+    root = preorder[0]
+    T[root].id = root
+    T[root].parent = -1
+
+    # 末尾再帰
+    if len(preorder) == 1:
+        return root
+
+    # inorder内におけるrootのインデックスより左分木と右分木に分割
+    sep = inorder.index(root)
+    left_inorder = inorder[:sep]
+    right_inorder = inorder[sep:]
+
+    # 上記の左分木と右分木のそれぞれに対応するpreorderの列を生成
+    left_preorder = [i for i in preorder if i in left_inorder]
+    right_preorder = [i for i in preorder if i in left_inorder]
+
+    # 左分木と右分木のそれぞれに対して再帰で繰り返す。
+    reconstruction(left_preorder, left_inorder)
+    reconstruction(right_preorder, right_inorder)
+
+    return
+
+
 n = int(input())
+preorder = list(map(int, input().split()))
+inorder = list(map(int, input().split()))
 
 # キーを節点番号, 値をNodeとした辞書を生成
 T = {i: Node(-1, -1, -1, -1) for i in range(0, n)}
 
-# T内のNodeへ入力データから得られる情報を追記
-for _ in range(0, n):
-    node_info = list(map(int, input().split()))
 
-    # ノード_info[0]に対する処理
-    T[node_info[0]].id = node_info[0]
-    # 子ノードの追記
-    T[node_info[0]].left = node_info[1]
-    T[node_info[0]].right = node_info[2]
+# rootの導出
+root = preorder[0]
+T[root].id = root
+T[root].parent = -1
 
-    # ノード_info[0]の子に対する処理
-    # 親ノードの追記
-    if T[node_info[0]].left != -1:
-        T[node_info[1]].parent = node_info[0]
-    if T[node_info[0]].right != -1:
-        T[node_info[2]].parent = node_info[0]
+# inorder内におけるrootのインデックスより左分木と右分木に分割
+sep = inorder.index(root)
+left_inorder = inorder[:sep]
+right_inorder = inorder[sep:]
 
-# rootの探索・追記
-for k, v in T.items():
-    if v.parent == -1:
-        root = k
-        break
-T[root].type = "root"
+# 上記の左分木と右分木のそれぞれに対応するpreorderの列を生成
+left_preorder = [i for i in preorder if i in left_inorder]
+right_preorder = [i for i in preorder if i in left_inorder]
 
 
 # 結果の出力
-print("Preorder")
-print_preorder(T, root)
-print()
-print("Inorder")
-print_inorder(T, root)
-print()
 print("Postorder")
 print_postorder(T, root)
 print()
