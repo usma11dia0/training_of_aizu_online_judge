@@ -111,6 +111,7 @@ top_front_list = [list(map(int, input().split())) for _ in range(0, q)]
 
 dice = Dice(face_list)
 dice.face_all()
+print(len(dice.face_dict_all))
 
 for top, front in top_front_list:
     print(dice.right_face(top, front))

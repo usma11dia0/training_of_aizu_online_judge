@@ -1,3 +1,6 @@
+from collections import deque
+
+
 class Dice:
     # 初期サイコロの目・転がし方
     def __init__(
@@ -17,9 +20,7 @@ class Dice:
             "W": self.roll_west,
             "SR": self.spin_right,
         }
-        self.face_all = [
-            [self.top, self.front, self.right, self.left, self.back, self.bottom]
-        ]
+        self.face_all = deque()
 
     # 北に転がす
     def roll_north(self) -> None:
@@ -84,7 +85,7 @@ class Dice:
             self.back,
             self.bottom,
         ]
-        self.face_all.extend(face_list)
+        self.face_all.append(face_list)
 
 
 dice = list(map(int, input().split()))
@@ -93,16 +94,31 @@ d = Dice(dice[0], dice[1], dice[2], dice[3], dice[4], dice[5])
 n = int(input())
 order_list = [list(map(int, input().split())) for _ in range(0, n)]
 
-# N,S,W,Eに1回転ずつ。
-command_roll = ["N", "S", "W", "E"]
-
+# "top", "front", "right", "left", "back", "bottom"が
+# それぞれ上面にくるように回転
+command_roll = ["", "N", "S", "W", "E", "NN"]
+command_reverse = ["", "S", "N", "E", "W", "SS"]
 # 右旋回を4回
 command_spin = ["SR"] * 4
 
-for cr in command_roll:
-    d.roll_dice(cr)
-    d.save_face()
-    for cs in command_spin:
-        d.roll_dice(cs)
+
+for roll, reverse in zip(command_roll, command_reverse):
+    if roll == "NN":
+        d.roll_dice(roll[0])
+        d.roll_dice(roll[0])
+    elif roll != "":
+        d.roll_dice(roll)
+    for spin in command_spin:
+        d.roll_dice(spin)
         d.save_face()
-print(d.face_all)
+    if reverse == "SS":
+        d.roll_dice(reverse[0])
+        d.roll_dice(reverse[0])
+    elif reverse != "":
+        d.roll_dice(reverse)
+
+# 結果の出力
+for order in order_list:
+    for face in d.face_all:
+        if order[0] == face[0] and order[1] == face[1]:
+            print(face[2])
