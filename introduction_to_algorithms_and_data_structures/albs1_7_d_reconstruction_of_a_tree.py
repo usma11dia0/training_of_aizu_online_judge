@@ -2,6 +2,11 @@
 # https://blog.ikappio.com/data-structure-tree-reconstruction-of-a-tree/
 
 
+import sys
+
+sys.setrecursionlimit(2000)
+
+
 class Node:
     def __init__(
         self,
