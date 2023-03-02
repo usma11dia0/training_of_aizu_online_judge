@@ -17,15 +17,21 @@ class Node:
 
 
 # 深さ優先探索(後行順巡回)
-def print_postorder(T: dict, u: int):
+def postorder(T: dict, u: int, l: list = []) -> list:
     if T[u].left != -1:
-        print_postorder(T, T[u].left)
+        postorder(T, T[u].left)
     if T[u].right != -1:
-        print_postorder(T, T[u].right)
-    print(f" {T[u].id}", end="")
+        postorder(T, T[u].right)
+    l.append(T[u].id)
+    # print(f"{T[u].id}", end=" ")
+    return l
 
 
 def reconstruction(preorder: list, inorder: list, parent: int) -> int:
+
+    # 末尾再帰
+    if len(preorder) == 0:
+        return -1
 
     # rootの導出
     # preorderの0番目は必ず部分木の節点
@@ -63,5 +69,4 @@ T = {i: Node(-1, -1, -1, -1) for i in range(1, n + 1)}
 reconstruction(preorder, inorder, -1)
 
 # 結果の出力
-print("Postorder")
-print_postorder(T, preorder[0])
+print(*postorder(T, preorder[0]))
