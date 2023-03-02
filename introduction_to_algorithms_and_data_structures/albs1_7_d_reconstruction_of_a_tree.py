@@ -2,11 +2,6 @@
 # https://blog.ikappio.com/data-structure-tree-reconstruction-of-a-tree/
 
 
-import sys
-
-sys.setrecursionlimit(2000)
-
-
 class Node:
     def __init__(
         self,
@@ -30,24 +25,22 @@ def print_postorder(T: dict, u: int):
     print(f" {T[u].id}", end="")
 
 
-def reconstruction(preorder: list, inorder: list, parent: int) -> list:
-
-    # 末尾再帰
-    if len(preorder) == 0:
-        return None
+def reconstruction(preorder: list, inorder: list, parent: int) -> int:
 
     # rootの導出
+    # preorderの0番目は必ず部分木の節点
     root = preorder[0]
     T[root].id = root
     T[root].parent = parent
 
+    # 末尾再帰
     if len(preorder) == 1:
         return root
 
     # inorder内におけるrootのインデックスより左分木と右分木に分割
     sep = inorder.index(root)
     left_inorder = inorder[:sep]
-    right_inorder = inorder[sep:]
+    right_inorder = inorder[sep + 1 :]
 
     # 上記の左分木と右分木のそれぞれに対応するpreorderの列を生成
     left_preorder = [i for i in preorder if i in left_inorder]
@@ -57,18 +50,18 @@ def reconstruction(preorder: list, inorder: list, parent: int) -> list:
     T[root].left = reconstruction(left_preorder, left_inorder, parent)
     T[root].right = reconstruction(right_preorder, right_inorder, parent)
 
+    return root
+
 
 n = int(input())
 preorder = list(map(int, input().split()))
 inorder = list(map(int, input().split()))
 
-# キーを節点番号, 値をNodeとした辞書を生成
-T = {i: Node(-1, -1, -1, -1) for i in range(0, n)}
+# キーを節点番号, 値をNodeとした辞書を生成 ※1-indexed
+T = {i: Node(-1, -1, -1, -1) for i in range(1, n + 1)}
 
 reconstruction(preorder, inorder, -1)
 
-
 # 結果の出力
 print("Postorder")
-# print_postorder(T, root)
-# print()
+print_postorder(T, preorder[0])
