@@ -37,6 +37,16 @@ class BinarySearchTree:
         else:
             y.right = z
 
+    def find(self, node: Node, key: int) -> bool:
+        if node == None:
+            return False
+        if node.key == node:
+            return True
+        elif node.key > key:
+            return find(node.left, key)
+        elif node.key < key:
+            return find(node.right, key)
+
 
 # 探索順を全て出力
 def print_order_all(T: BinarySearchTree) -> None:
