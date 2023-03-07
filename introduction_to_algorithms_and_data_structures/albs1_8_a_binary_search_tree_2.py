@@ -37,15 +37,18 @@ class BinarySearchTree:
         else:
             y.right = z
 
-    def find(self, node: Node, key: int) -> bool:
-        if node == None:
-            return False
-        if node.key == node:
-            return True
-        elif node.key > key:
-            return find(node.left, key)
-        elif node.key < key:
-            return find(node.right, key)
+    def find(self, key: int) -> bool:
+        def _find(node: Node, key: int) -> bool:
+            if node == None:
+                return False
+            if node.key == key:
+                return True
+            elif node.key > key:
+                return _find(node.left, key)
+            elif node.key < key:
+                return _find(node.right, key)
+
+        return _find(self.root, key)
 
 
 # 探索順を全て出力
@@ -80,5 +83,11 @@ T = BinarySearchTree()
 for command in command_list:
     if command[0] == "insert":
         T.insert(int(command[1]))
+    elif command[0] == "find":
+        is_find = T.find(int(command[1]))
+        if is_find:
+            print("yes")
+        else:
+            print("no")
     elif command[0] == "print":
         print_order_all(T)
