@@ -1,11 +1,12 @@
 # https://www.udemy.com/course/python-algo/learn/lecture/21384630?start=225#overview
 
+
 class Node:
     def __init__(self, key: int) -> None:
         self.key = key
         self.left = None
         self.right = None
-        self.p = None
+        self.parent = None
 
 
 class BinarySearchTree:
@@ -29,7 +30,7 @@ class BinarySearchTree:
                 x = x.left
             else:
                 x = x.right
-        z.p = y
+        z.parent = y
 
         # Tが空の時
         if y == None:
@@ -39,22 +40,42 @@ class BinarySearchTree:
         else:
             y.right = z
 
-    def find(self, key: int) -> bool:
-        def _find(node: Node, key: int) -> bool:
+    def find(self, key: int) -> Node:
+        def _find(node: Node, key: int) -> Node:
+            # 末尾再帰
             if node == None:
-                return False
+                return -1
+            # keyの値を持つNodeを再帰で抽出
             if node.key == key:
-                return True
+                return Node
             elif node.key > key:
                 return _find(node.left, key)
             elif node.key < key:
                 return _find(node.right, key)
 
+        # 内部関数_findで第1引数にrootを指定して呼び出し
         return _find(self.root, key)
+
+    def delete(self, key: int) -> None:
+
+        # 木からkeyのNodeを探す。
+        target_node = self.find(key)
+
+        # 子を一つも持たない場合
+        if target_node.left == None and target_node.right == None:
+            return None
+        
+        # 子を一つのみ持つ場合
+        elif target_node.left == None or target_node.right == None:
+            pass
+
+        pass
 
 
 # 探索順を全て出力
 def print_order_all(T: BinarySearchTree) -> None:
+
+    # 深さ優先探索(先行順巡回)
     def _print_preorder(T: BinarySearchTree, node: Node):
         print(f" {node.key}", end="")
         if node.left != None:
