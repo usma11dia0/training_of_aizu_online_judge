@@ -1,4 +1,5 @@
 # https://www.udemy.com/course/python-algo/learn/lecture/21384630?start=225#overview
+from collections import deque
 
 
 class Node:
@@ -12,6 +13,7 @@ class Node:
 class BinarySearchTree:
     def __init__(self) -> None:
         self.root = None
+        self.preorder = deque()
 
     def insert(self, z: int):
         # zをノード化
@@ -85,14 +87,16 @@ class BinarySearchTree:
 
 
 # 深さ優先探索(リスト生成)
-def preorder(T: BinarySearchTree, node: Node) -> list:
-    def _preorder():
-        pass
+def preorder(node: Node, queue: deque) -> list:
+    if node.left != None:
+        preorder(node.left, queue)
+    queue.append(node.key)
+    if node.right != None:
+        preorder(node.right, queue)
 
 
 # 探索順を全て出力
 def print_order_all(T: BinarySearchTree) -> None:
-
     # 深さ優先探索(先行順巡回)
     def _print_preorder(node: Node) -> None:
         print(f" {node.key}", end="")
@@ -131,3 +135,7 @@ for command in command_list:
             print("no")
     elif command[0] == "print":
         print_order_all(T)
+
+preorder_queue = deque()
+preorder(T.root, preorder_queue)
+print(preorder_queue)
