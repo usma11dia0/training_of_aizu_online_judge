@@ -44,7 +44,7 @@ class BinarySearchTree:
         def _find(node: Node, key: int) -> Node:
             # 末尾再帰
             if node == None:
-                return -1
+                return None
             # keyの値を持つNodeを再帰で抽出
             if node.key == key:
                 return Node
@@ -59,16 +59,34 @@ class BinarySearchTree:
     def delete(self, key: int) -> None:
 
         # 木からkeyのNodeを探す。
-        target_node = self.find(key)
+        # z : 削除対象のノード
+        z = self.find(key)
 
         # 子を一つも持たない場合
-        if target_node.left == None and target_node.right == None:
-            return None
-        
+        if z.left == None and z.right == None:
+            z = None
+            return
+
         # 子を一つのみ持つ場合
-        elif target_node.left == None or target_node.right == None:
+        elif z.left == None:
+            if z.parent.left == z:
+                z.parent.left = z.right
+            else:
+                z.parent.right = z.right
+        elif z.right == None:
+            if z.parent.left == z:
+                z.parent.left = z.left
+            else:
+                z.parent.right = z.left
+
+        # 子を二つ持つ場合
+        else:
             pass
 
+
+# 深さ優先探索(リスト生成)
+def preorder(T: BinarySearchTree, node: Node) -> list:
+    def _preorder():
         pass
 
 
@@ -76,25 +94,25 @@ class BinarySearchTree:
 def print_order_all(T: BinarySearchTree) -> None:
 
     # 深さ優先探索(先行順巡回)
-    def _print_preorder(T: BinarySearchTree, node: Node):
+    def _print_preorder(node: Node) -> None:
         print(f" {node.key}", end="")
         if node.left != None:
-            _print_preorder(T, node.left)
+            _print_preorder(node.left)
         if node.right != None:
-            _print_preorder(T, node.right)
+            _print_preorder(node.right)
 
     # 深さ優先探索(中間順巡回)
-    def _print_inorder(T: BinarySearchTree, node: Node) -> None:
+    def _print_inorder(node: Node) -> None:
         if node.left != None:
-            _print_inorder(T, node.left)
+            _print_inorder(node.left)
         print(f" {node.key}", end="")
         if node.right != None:
-            _print_inorder(T, node.right)
+            _print_inorder(node.right)
 
     # 結果の出力
-    _print_inorder(T, T.root)
+    _print_inorder(T.root)
     print()
-    _print_preorder(T, T.root)
+    _print_preorder(T.root)
     print()
 
 
@@ -107,8 +125,7 @@ for command in command_list:
     if command[0] == "insert":
         T.insert(int(command[1]))
     elif command[0] == "find":
-        is_find = T.find(int(command[1]))
-        if is_find:
+        if T.find(int(command[1])) != None:
             print("yes")
         else:
             print("no")
