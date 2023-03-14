@@ -13,7 +13,6 @@ class Node:
 class BinarySearchTree:
     def __init__(self) -> None:
         self.root = None
-        self.preorder = deque()
 
     def insert(self, z: int):
         # zをノード化
@@ -49,7 +48,7 @@ class BinarySearchTree:
                 return None
             # keyの値を持つNodeを再帰で抽出
             if node.key == key:
-                return Node
+                return node
             elif node.key > key:
                 return _find(node.left, key)
             elif node.key < key:
@@ -66,8 +65,10 @@ class BinarySearchTree:
 
         # 子を一つも持たない場合
         if z.left == None and z.right == None:
-            z = None
-            return
+            if z.parent.left == z:
+                z.parent.left = None
+            else:
+                z.parent.right = None
 
         # 子を一つのみ持つ場合
         elif z.left == None:
@@ -83,7 +84,15 @@ class BinarySearchTree:
 
         # 子を二つ持つ場合
         else:
-            pass
+            preorder_queue = deque()
+            preorder(self.root, preorder_queue)
+            # 中間順巡回の順でkeyのノードを探索
+            while preorder_node.key == key:
+                preorder_node = preorder_queue.pop()
+            # 中間順巡回の順でkeyの次のノードを抽出(zの次節点)
+            target_node = preorder_queue.pop()
+            target_node.key = z.key
+            self.delete(target_node.key)
 
 
 # 深さ優先探索(リスト生成)
@@ -133,9 +142,7 @@ for command in command_list:
             print("yes")
         else:
             print("no")
+    elif command[0] == "delete":
+        T.delete(int(command[1]))
     elif command[0] == "print":
         print_order_all(T)
-
-preorder_queue = deque()
-preorder(T.root, preorder_queue)
-print(preorder_queue)
