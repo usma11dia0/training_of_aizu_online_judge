@@ -1,5 +1,8 @@
 # https://www.udemy.com/course/python-algo/learn/lecture/21384630?start=225#overview
 from collections import deque
+import sys
+
+sys.setrecursionlimit(10000)
 
 
 class Node:
@@ -63,6 +66,9 @@ class BinarySearchTree:
         # z : 削除対象のノード
         z = self.find(key)
 
+        if self.root.key == z.key:
+            self.root = None
+
         # 子を一つも持たない場合
         if z.left == None and z.right == None:
             if z.parent.left == z:
@@ -74,32 +80,37 @@ class BinarySearchTree:
         elif z.left == None:
             if z.parent.left == z:
                 z.parent.left = z.right
+                z.right.parent = z.parent.left
             else:
                 z.parent.right = z.right
+                z.right.parent = z.parent
         elif z.right == None:
             if z.parent.left == z:
                 z.parent.left = z.left
+                z.left.parent = z.parent
             else:
                 z.parent.right = z.left
+                z.left.parent = z.parent
 
         # 子を二つ持つ場合
         else:
             preorder_queue = deque()
             preorder(self.root, preorder_queue)
+            preorder_node = preorder_queue.pop()
             # 中間順巡回の順でkeyのノードを探索
-            while preorder_node.key == key:
+            while preorder_node.key != key:
                 preorder_node = preorder_queue.pop()
             # 中間順巡回の順でkeyの次のノードを抽出(zの次節点)
             target_node = preorder_queue.pop()
-            target_node.key = z.key
+            z.key = target_node.key
             self.delete(target_node.key)
 
 
 # 深さ優先探索(リスト生成)
-def preorder(node: Node, queue: deque) -> list:
+def preorder(node: Node, queue: deque) -> list[Node]:
     if node.left != None:
         preorder(node.left, queue)
-    queue.append(node.key)
+    queue.append(node)
     if node.right != None:
         preorder(node.right, queue)
 
