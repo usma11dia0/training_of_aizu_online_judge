@@ -2,8 +2,6 @@
 from collections import deque
 import sys
 
-sys.setrecursionlimit(10000)
-
 
 class Node:
     def __init__(self, key: int) -> None:
@@ -107,7 +105,7 @@ class BinarySearchTree:
 
 
 # 深さ優先探索(リスト生成)
-def preorder(node: Node, queue: deque) -> list[Node]:
+def preorder(node: Node, queue: deque) -> list:
     if node.left != None:
         preorder(node.left, queue)
     queue.append(node)
