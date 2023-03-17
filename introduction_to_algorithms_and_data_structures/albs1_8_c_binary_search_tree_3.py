@@ -75,13 +75,17 @@ class BinarySearchTree:
                 z.parent.right = None
 
         # 子を一つのみ持つ場合
+        # 削除対象zの左側の子がない場合：
         elif z.left == None:
+            # 削除対象zが親の左側の子である場合：
             if z.parent.left == z:
                 z.parent.left = z.right
                 z.right.parent = z.parent.left
+            # 削除対象zが親の右側の子である場合：
             else:
                 z.parent.right = z.right
                 z.right.parent = z.parent
+        # 削除対象zの右側の子がない場合：
         elif z.right == None:
             if z.parent.left == z:
                 z.parent.left = z.left
@@ -92,16 +96,24 @@ class BinarySearchTree:
 
         # 子を二つ持つ場合
         else:
-            preorder_queue = deque()
-            preorder(self.root, preorder_queue)
-            preorder_node = preorder_queue.pop()
-            # 中間順巡回の順でkeyのノードを探索
-            while preorder_node.key != key:
-                preorder_node = preorder_queue.pop()
-            # 中間順巡回の順でkeyの次のノードを抽出(zの次節点)
-            target_node = preorder_queue.pop()
+            # 削除対象ノードの右部分木の最小ノードを見つける
+            target_node = z.right
+            while target_node.left != None:
+                target_node = target_node.left
+
+            # 削除対象ノードと右部分木の最小ノードを入れ替え
             z.key = target_node.key
-            self.delete(target_node.key)
+
+            # 上記でzの位置に移動したため、不要な最小ノードを削除
+            if target_node.parent.left == target_node:
+                # 最小ノードの親の新たな子として、新たに設定するのは最小ノードの右側のみ。
+                # (左側の子が存在した場合、その子が最小ノードになるため)
+                target_node.parent.left = target_node.right
+            else:
+                target_node.parent.right = target_node.right
+
+            if target_node.right != None:
+                target_node.right.parent = target_node.parent
 
 
 # 深さ優先探索(リスト生成)
