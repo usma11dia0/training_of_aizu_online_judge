@@ -1,6 +1,5 @@
 # https://www.udemy.com/course/python-algo/learn/lecture/21384630?start=225#overview
 from collections import deque
-import sys
 
 
 class Node:
