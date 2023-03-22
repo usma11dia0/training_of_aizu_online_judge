@@ -1,5 +1,5 @@
 class Node:
-    def __init__(self, key, priority):
+    def __init__(self, key: int, priority: int):
         self.key = key
         self.priority = priority
         self.left = None
@@ -10,7 +10,7 @@ class Treap:
     def __init__(self):
         self.root = None
 
-    def right_rotate(self, t):
+    def right_rotate(self, t: int):
         s = t.left
         t.left = s.right
         s.right = t
