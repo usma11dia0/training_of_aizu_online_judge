@@ -83,28 +83,23 @@ class Treap:
         self.preorder(t.right, result)
 
 
-def main():
-    m = int(input())
-    treap = Treap()
+m = int(input())
+treap = Treap()
 
-    for _ in range(m):
-        command = input().split()
+for _ in range(m):
+    command = input().split()
 
-        if command[0] == "insert":
-            treap.root = treap.insert(treap.root, int(command[1]), int(command[2]))
-        elif command[0] == "find":
-            print("yes" if treap.find(treap.root, int(command[1])) else "no")
-        elif command[0] == "delete":
-            treap.root = treap.delete(treap.root, int(command[1]))
-        elif command[0] == "print":
-            inorder_result = []
-            treap.inorder(treap.root, inorder_result)
-            print(" ".join(f" {k}" for k in inorder_result))
+    if command[0] == "insert":
+        treap.root = treap.insert(treap.root, int(command[1]), int(command[2]))
+    elif command[0] == "find":
+        print("yes" if treap.find(treap.root, int(command[1])) else "no")
+    elif command[0] == "delete":
+        treap.root = treap.delete(treap.root, int(command[1]))
+    elif command[0] == "print":
+        inorder_result = []
+        treap.inorder(treap.root, inorder_result)
+        print(" ".join(f" {k}" for k in inorder_result))
 
-            preorder_result = []
-            treap.preorder(treap.root, preorder_result)
-            print(" ".join(f" {k}" for k in preorder_result))
-
-
-if __name__ == "__main__":
-    main()
+        preorder_result = []
+        treap.preorder(treap.root, preorder_result)
+        print(" ".join(f" {k}" for k in preorder_result))
