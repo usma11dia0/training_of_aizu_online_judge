@@ -1,105 +1,130 @@
+# https://judge.u-aizu.ac.jp/onlinejudge/review.jsp?rid=7093165#1
+
+from collections import deque
+
+
 class Node:
-    def __init__(self, key: int, priority: int):
+    def __init__(self, key: int) -> None:
         self.key = key
-        self.priority = priority
         self.left = None
         self.right = None
+        self.parent = None
+        self.priority = None
 
 
 class Treap:
-    def __init__(self):
+    def __init__(self) -> None:
         self.root = None
 
-    def right_rotate(self, t: int):
-        s = t.left
-        t.left = s.right
-        s.right = t
-        return s
+    def insert(self, z: int):
+        z = Node(z)
+        y = None
+        x = self.root
+        while x != None:
+            y = x
+            if z.key < x.key:
+                x = x.left
+            else:
+                x = x.right
+        z.parent = y
 
-    def left_rotate(self, t):
-        s = t.right
-        t.right = s.left
-        s.left = t
-        return s
-
-    def insert(self, t, key, priority):
-        if t is None:
-            return Node(key, priority)
-
-        if key == t.key:
-            return t
-
-        if key < t.key:
-            t.left = self.insert(t.left, key, priority)
-            if t.priority < t.left.priority:
-                t = self.right_rotate(t)
+        if y == None:
+            self.root = z
+        elif z.key < y.key:
+            y.left = z
         else:
-            t.right = self.insert(t.right, key, priority)
-            if t.priority < t.right.priority:
-                t = self.left_rotate(t)
+            y.right = z
 
-        return t
+    def find(self, key: int) -> Node:
+        def _find(node: Node, key: int) -> Node:
+            if node == None:
+                return None
+            if key == node.key:
+                return node
+            elif key < node.key:
+                return _find(node.left, key)
+            elif key > node.key:
+                return _find(node.right, key)
 
-    def delete(self, t, key):
-        if t is None:
-            return None
+        return _find(self.root, key)
 
-        if key < t.key:
-            t.left = self.delete(t.left, key)
-        elif key > t.key:
-            t.right = self.delete(t.right, key)
-        else:
-            return (
-                t.left
-                if t.right is None
-                else t.right
-                if t.left is None
-                else self.delete(
-                    t, t.left.key if t.left.priority < t.right.priority else t.right.key
-                )
-            )
+    def delete(self, key: int) -> None:
+        def _min_node(node: Node) -> Node:
+            current_node = node
+            while current_node.left is not None:
+                current_node = current_node.left
+            return current_node
 
-        return t
+        def _delete(node: Node, key: int) -> Node:
+            if node == None:
+                return None
+            if key < node.key:
+                node.left = _delete(node.left, key)
+            elif key > node.key:
+                node.right = _delete(node.right, key)
+            else:
+                delete_node = node
+                if delete_node.left is None:
+                    return delete_node.right
+                elif delete_node.right is None:
+                    return delete_node.left
+                else:
+                    min_node = _min_node(delete_node.right)
+                    delete_node.key = min_node.key
+                    node.right = _delete(delete_node.right, min_node.key)
+            return node
 
-    def find(self, t, key):
-        if t is None or t.key == key:
-            return t
-        if key < t.key:
-            return self.find(t.left, key)
-        return self.find(t.right, key)
+        _delete(self.root, key)
 
-    def inorder(self, t, result):
-        if t is None:
-            return
-        self.inorder(t.left, result)
-        result.append(t.key)
-        self.inorder(t.right, result)
 
-    def preorder(self, t, result):
-        if t is None:
-            return
-        result.append(t.key)
-        self.preorder(t.left, result)
-        self.preorder(t.right, result)
+# 深さ優先探索(リスト生成)
+def preorder(node: Node, queue: deque) -> list:
+    if node.left != None:
+        preorder(node.left, queue)
+    queue.append(node)
+    if node.right != None:
+        preorder(node.right, queue)
+
+
+# 探索順を全て出力
+def print_order_all(T: BinarySearchTree) -> None:
+    # 深さ優先探索(先行順巡回)
+    def _print_preorder(node: Node) -> None:
+        print(f" {node.key}", end="")
+        if node.left != None:
+            _print_preorder(node.left)
+        if node.right != None:
+            _print_preorder(node.right)
+
+    # 深さ優先探索(中間順巡回)
+    def _print_inorder(node: Node) -> None:
+        if node.left != None:
+            _print_inorder(node.left)
+        print(f" {node.key}", end="")
+        if node.right != None:
+            _print_inorder(node.right)
+
+    # 結果の出力
+    _print_inorder(T.root)
+    print()
+    _print_preorder(T.root)
+    print()
 
 
 m = int(input())
-treap = Treap()
+command_list = [list(input().split()) for _ in range(0, m)]
 
-for _ in range(m):
-    command = input().split()
+T = BinarySearchTree()
 
+for command in command_list:
     if command[0] == "insert":
-        treap.root = treap.insert(treap.root, int(command[1]), int(command[2]))
+        T.insert(int(command[1]))
     elif command[0] == "find":
-        print("yes" if treap.find(treap.root, int(command[1])) else "no")
+        if T.find(int(command[1])) != None:
+            print("yes")
+        else:
+            print("no")
     elif command[0] == "delete":
-        treap.root = treap.delete(treap.root, int(command[1]))
+        T.delete(int(command[1]))
     elif command[0] == "print":
-        inorder_result = []
-        treap.inorder(treap.root, inorder_result)
-        print(" ".join(f" {k}" for k in inorder_result))
-
-        preorder_result = []
-        treap.preorder(treap.root, preorder_result)
-        print(" ".join(f" {k}" for k in preorder_result))
+        print_order_all(T)
