@@ -4,36 +4,50 @@ from collections import deque
 
 
 class Node:
-    def __init__(self, key: int) -> None:
+    def __init__(self, key: int, priority: int) -> None:
         self.key = key
+        self.priority = priority
         self.left = None
         self.right = None
         self.parent = None
-        self.priority = None
 
 
 class Treap:
     def __init__(self) -> None:
         self.root = None
 
-    def insert(self, z: int):
-        z = Node(z)
-        y = None
-        x = self.root
-        while x != None:
-            y = x
-            if z.key < x.key:
-                x = x.left
-            else:
-                x = x.right
-        z.parent = y
+    def _rightRotate(self, t: Node) -> Node:
+        s = Node(None, None)
+        s = t.left
+        t.left = s.right
+        s.right = t
+        return s
 
-        if y == None:
-            self.root = z
-        elif z.key < y.key:
-            y.left = z
-        else:
-            y.right = z
+    def _leftRotate(self, t: Node) -> Node:
+        s = Node(None, None)
+        s = t.right
+        t.right = s.left
+        s.left = t
+        return s
+
+    def insert(self, key: int, priority: int) -> None:
+        def _insert(node: Node, key: int, priority: int) -> Node:
+            if node == None:
+                return Node(key, priority)
+            if key == node.key:
+                return node
+
+            if key < node.key:
+                node.left = _insert(node.left, key, priority)
+                if node.priority < node.left.priority:
+                    node = self._rightRotate(node)
+            else:
+                node.right = _insert(node.right, key, priority)
+                if node.priority < node.right.priority:
+                    node = self._leftRotate(node)
+            return node
+
+        self.root = _insert(self.root, key, priority)
 
     def find(self, key: int) -> Node:
         def _find(node: Node, key: int) -> Node:
@@ -64,14 +78,17 @@ class Treap:
                 node.right = _delete(node.right, key)
             else:
                 delete_node = node
-                if delete_node.left is None:
-                    return delete_node.right
+                if delete_node.left is None and delete_node.right is None:
+                    return None
+                elif delete_node.left is None:
+                    delete_node = self._leftRotate(delete_node)
                 elif delete_node.right is None:
-                    return delete_node.left
+                    delete_node = self._rightRotate(delete_node)
                 else:
-                    min_node = _min_node(delete_node.right)
-                    delete_node.key = min_node.key
-                    node.right = _delete(delete_node.right, min_node.key)
+                    if delete_node.left.priority > delete_node.right.priority:
+                        delete_node = self._rightRotate(delete_node)
+                    else:
+                        delete_node = self._leftRotate(delete_node)
             return node
 
         _delete(self.root, key)
@@ -87,7 +104,7 @@ def preorder(node: Node, queue: deque) -> list:
 
 
 # 探索順を全て出力
-def print_order_all(T: BinarySearchTree) -> None:
+def print_order_all(T: Treap) -> None:
     # 深さ優先探索(先行順巡回)
     def _print_preorder(node: Node) -> None:
         print(f" {node.key}", end="")
@@ -114,11 +131,11 @@ def print_order_all(T: BinarySearchTree) -> None:
 m = int(input())
 command_list = [list(input().split()) for _ in range(0, m)]
 
-T = BinarySearchTree()
+T = Treap()
 
 for command in command_list:
     if command[0] == "insert":
-        T.insert(int(command[1]))
+        T.insert(int(command[1]), int(command[2]))
     elif command[0] == "find":
         if T.find(int(command[1])) != None:
             print("yes")
