@@ -63,12 +63,6 @@ class Treap:
         return _find(self.root, key)
 
     def delete(self, key: int) -> None:
-        def _min_node(node: Node) -> Node:
-            current_node = node
-            while current_node.left is not None:
-                current_node = current_node.left
-            return current_node
-
         def _delete(node: Node, key: int) -> Node:
             if node == None:
                 return None
