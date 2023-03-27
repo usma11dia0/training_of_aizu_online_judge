@@ -83,6 +83,7 @@ class Treap:
                         delete_node = self._rightRotate(delete_node)
                     else:
                         delete_node = self._leftRotate(delete_node)
+                    # delete_node = _delete(delete_node, key)
             return node
 
         _delete(self.root, key)
