@@ -62,31 +62,30 @@ class Treap:
 
         return _find(self.root, key)
 
-    def delete(self, key: int) -> None:
-        def _delete(node: Node, key: int) -> Node:
-            if node == None:
+    def delete(self, node: Node, key: int) -> None:
+        if node == None:
+            return None
+        if key < node.key:
+            node.left = _delete(node.left, key)
+        elif key > node.key:
+            node.right = _delete(node.right, key)
+        else:
+            return _delete(node, key)
+
+        def _delete(node: Node, key: int) -> None:
+            delete_node = node
+            if delete_node.left is None and delete_node.right is None:
                 return None
-            if key < node.key:
-                node.left = _delete(node.left, key)
-            elif key > node.key:
-                node.right = _delete(node.right, key)
+            elif delete_node.left is None:
+                delete_node = self._leftRotate(delete_node)
+            elif delete_node.right is None:
+                delete_node = self._rightRotate(delete_node)
             else:
-                delete_node = node
-                if delete_node.left is None and delete_node.right is None:
-                    return None
-                elif delete_node.left is None:
-                    delete_node = self._leftRotate(delete_node)
-                elif delete_node.right is None:
+                if delete_node.left.priority > delete_node.right.priority:
                     delete_node = self._rightRotate(delete_node)
                 else:
-                    if delete_node.left.priority > delete_node.right.priority:
-                        delete_node = self._rightRotate(delete_node)
-                    else:
-                        delete_node = self._leftRotate(delete_node)
-                    # delete_node = _delete(delete_node, key)
-            return node
-
-        _delete(self.root, key)
+                    delete_node = self._leftRotate(delete_node)
+            return self.delete(delete_node, key)
 
 
 # 深さ優先探索(リスト生成)
