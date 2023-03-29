@@ -1,6 +1,7 @@
 # https://judge.u-aizu.ac.jp/onlinejudge/review.jsp?rid=7093165#1
 
 from collections import deque
+import sys
 
 
 class Node:
