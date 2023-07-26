@@ -23,10 +23,4 @@ class Treap:
             y = root_treap
 
 
-        # 大小を比較しながらleftまたはrightがNoneとなる子まで移動し、
-        # その親を取得
-        while root_treap != None:
-            y = root_treap
-
-
 
