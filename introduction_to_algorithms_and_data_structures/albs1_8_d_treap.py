@@ -45,7 +45,7 @@ class Treap:
                 node.right = _insert(node.right, key, priority)
                 # 右の子の方が優先度が高い場合、左回転
                 if node.priority < node.right.priority:
-                    node = self._left_rorate(node)
+                    node = self._left_rotate(node)
 
             # 深さを戻す際に親ノードを返す
             return node
@@ -81,10 +81,10 @@ class Treap:
                   return None
                 # 右の子のみを持つ場合左回転
                 elif node.left is None:
-                    node = self._left_rotate(Node)
+                    node = self._left_rotate(node)
                 # 左の子のみを持つ場合右回転
                 elif node.right is None:
-                    node = self._right_rotate(Node)
+                    node = self._right_rotate(node)
                 # 両方の子を持つ場合
                 else:
                     # 優先度の高い方を持ち上げる
@@ -93,8 +93,9 @@ class Treap:
                     else:
                         node = self._left_rotate(node)
                 return _delete(node, key)
+            return node
         
-        _delete(self.root, key)
+        self.root = _delete(self.root, key)
     
     def print(self) -> str:
         # 中間順巡回(inorder)を出力
@@ -117,7 +118,7 @@ class Treap:
         _preorder(self.root)
         preorder_output = " ".join(output)
 
-        return " " + inorder_output + "/n" + " " + preorder_output
+        return " " + inorder_output + "\n" + " " + preorder_output
     
 
 m = int(input())
