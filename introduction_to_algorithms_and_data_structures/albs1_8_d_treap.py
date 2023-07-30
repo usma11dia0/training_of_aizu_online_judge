@@ -50,7 +50,7 @@ class Treap:
             # 深さを戻す際に親ノードを返す
             return node
     
-        _insert(self.root, key, priority)
+        self.root = _insert(self.root, key, priority)
     
     def find(self, key: int) -> bool:
         def _find(node: Node, key: int) -> bool:
