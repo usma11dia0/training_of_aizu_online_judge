@@ -11,7 +11,7 @@ def dfs(pos, G, visited):  # pos:int, G:list, visited:list
             dfs(i, G, visited)  # 隣接ノードiを現在位置としてdfsを再帰呼び出し
     # 再帰毎にdfs()のforループの残り(callstack)が溜まっていく
     # for i in G[pos]:のループが終わり次第、dfs()の返り値でNoneが返る
-    # Noneが返った後は溜まったcallbackを処理する。 →　本の一つ戻るを表現
+    # Noneが返った後は溜まったcallbackを処理する
 
 # 入力
 n = int(input())
@@ -36,18 +36,3 @@ print(adj_list)
 # 0-index 要素0番目は番兵
 visited = [False] * (n + 1)
 dfs(1, n, visited)
-
-# # print(visited)　※visited[x] は頂点 x が青色かどうかを表す真偽値
-# # 出力結果：[False, True, True, True, True, True, True]
-
-# # 連結かどうかの判定（answer = True のとき連結）
-# answer = True
-# for i in range(1, N + 1):
-#     if visited[i] == False:
-#         answer = False
-
-# # 答えの出力
-# if answer == True:
-#     print("The graph is connected.")
-# else:
-#     print("The graph is not connected.")
