@@ -3,15 +3,17 @@ import sys
 # 再帰呼び出しの深さの上限を 120000 に設定
 sys.setrecursionlimit(120000)
 
-# 深さ優先探索を行う関数（pos は現在位置、Gは隣接リスト, visited[x] は頂点 x が青色かどうかを表す真偽値 ）
-def dfs(pos, G, visited):  # pos:int, G:list, visited:list
+# 深さ優先探索を行う関数
+def dfs(pos: int, G: list, visited: list, d: list, f: list, cnt: int) -> int:
     visited[pos] = True  # 現在位置を青色に塗る(訪問済みにする)
-    for i in G[pos]:  # 現在位置の隣接ノード(i)を一つ一つ調べる。後半で再帰呼び出しているため、隣接リストを網羅出来る。
+    cnt += 1
+    d[pos] = cnt
+    for i in G[pos]:  # 現在位置の隣接ノード(i)を一つ一つ調べる。
         if visited[i] == False:  # もし隣接ノードが白色(未訪問)だったら、
-            dfs(i, G, visited)  # 隣接ノードiを現在位置としてdfsを再帰呼び出し
-    # 再帰毎にdfs()のforループの残り(callstack)が溜まっていく
-    # for i in G[pos]:のループが終わり次第、dfs()の返り値でNoneが返る
-    # Noneが返った後は溜まったcallbackを処理する
+            cnt = dfs(i, G, visited, d, f, cnt)  # 隣接ノードiを現在位置としてdfsを再帰呼び出し
+    cnt += 1
+    f[pos] = cnt
+    return cnt
 
 # 入力
 n = int(input())
@@ -29,10 +31,18 @@ for row in input:
         for i in range(0, k):
             t = row[2 + i]
             adj_list[u].append(t)
-            adj_list[t].append(u)
+            # adj_list[t].append(u) #反対方向も加えると無効グラフの隣接リストを示す。
 print(adj_list) 
 
 # 深さ優先探索
 # 0-index 要素0番目は番兵
 visited = [False] * (n + 1)
-dfs(1, n, visited)
+# d[v]: vを最初に発見した時刻
+d = [-1] * (n + 1)
+# f[v]: vを最後に発見した時刻
+f = [-1] * (n + 1)
+cnt = 0
+dfs(1, adj_list, visited, d, f, cnt)
+
+for i in range(1, n + 1):
+    print(f'{i} {d[i]} {f[i]}')
