@@ -1,49 +1,62 @@
-class UnionFind:
-    # n頂点の Union-Find 木を作成
-    def __init__(self, n):  # nには頂点の数Nが入る。
-        self.n = n
-        self.par = [-1] * (n + 1)  # parは親を示す。-1は全ての頂点に親がいないことを示す。
-        self.size = [1] * (n + 1)  # sizeはグループの頂点数。初期値は各グループ頂点1つのため1。
+# question https://atcoder.jp/contests/tessoku-book/tasks/tessoku_book_bo
+# answer https://github.com/E869120/kyopro-tessoku/blob/main/codes/python/chap09/answer_A67.py
 
-    # 頂点xの根を返す
+# 教訓
+# unite()を実装するために必要なこと
+# １．頂点aのrootと頂点bのrootを調べる。
+# ２．頂点aのルートに紐づくノードの数と頂点bのルートに紐づくノードの数を調べる(Union by Size)
+# ３．頂点aのルートと頂点bのルートを連結し新たな木を作成する。その際、新たな木のサイズも更新する。
+#     ※※頂点a,bのノード数ではなく、頂点a,bのルートのノード数である点に要注意。
+
+#  list.sort() メソッドには引数にkeyを指定することが可能で、比較を行う前にリストの各要素に対して呼び出される関数を指定出来る
+
+# Union-find木を定義
+class unionFind:
+    # 初期化
+    def __init__(self, n):
+        self.n = n  # Union-Find木の頂点の数
+        self.par = [-1] * (n + 1)  # 各頂点の親は初期状態では自分自身(親が自分自身≒親無しの場合-1) ※1-indexedで実装
+        self.size = [1] * (n + 1)  # 各頂点に紐づくノードの数は、初期状態では1 ※1-indexedで実装
+
+    # 頂点xのrootを調べる関数
     def root(self, x):
         while self.par[x] != -1:
             x = self.par[x]
         return x
 
-    # 要素u, vを含むグループを統合
+    # 頂点uと頂点vを連結させる関数
     def unite(self, u, v):
-        root_u = self.root(u)
-        root_v = self.root(v)
-        if root_u != root_v:
-            # uとvが異なるグループのときのみ処理を行う
-            # Union By Sizeによる場合分け。頂点数の多いグループの根を上に持っていく
-            if self.size[root_u] < self.size[root_v]:
-                self.par[root_u] = root_v
-                self.size[root_v] += self.size[root_u]
+        # 頂点uとvのrootを調べ、rootが既に同一でないかどうかを調べる。
+        rootu = self.root(u)
+        rootv = self.root(v)
+        # rootが同一でない場合のみ処理を実行
+        if rootu != rootv:
+            # ノード数が多い頂点を新たなルートにする
+            if self.size[rootu] < self.size[rootv]:  # 頂点uよりも頂点vの方がノード数が多い場合
+                self.par[rootu] = rootv  # 頂点uのルートの上に、新たなルート(頂点vのルート)を設定
+                self.size[rootv] += self.size[rootu]  # 連結された新たな木(頂点vのルート)のサイズを更新する。
             else:
-                self.par[root_v] = root_u
-                self.size[root_u] += self.size[root_v]
+                self.par[rootv] = rootu  # 頂点vのルートの上に、新たなルート(頂点uのルート)を設定
+                self.size[rootu] += self.size[rootv]  # 連結された新たな木(頂点uのルート)のサイズを更新する。
 
-    #  要素uとvが同一のグループかどうかを判定
+    # 頂点uと頂点vが同じ連結成分に属するかどうかを調べる関数
     def same(self, u, v):
         return self.root(u) == self.root(v)
 
-# 入力
-n, m = map(int, input().split())
-uf = UnionFind(n)
-output = []
 
-for i in range(0, m):
-    s, t = map(int, input().split())
-    uf.unite(s, t)
+# 入力データの取得
+N, M = map(int, input().split())
+edges = [list(map(int, input().split())) for _ in range(0, M)]
 
-q = int(input())
-for j in range(0, q):
-    s, t = map(int, input().split())
-    if uf.same(s, t):
-        output.append('yes')
-    else:
-        output.append('no')
+# 辺(x[2])を長さの小さい順にsortする。
+edges.sort(key=lambda x: x[2])  # 比較を行う前にリストの各要素に対して呼び出される関数を指定。
+# リストの各要素xとして、x[2]を指定している。
 
-print('\n'.join(output))
+# 最小全域木を求める
+uf = unionFind(N)
+answer = 0
+for a, b, c in edges:
+    if not uf.same(a, b):  # 頂点a,bがまだ同じ連結成分に属していない場合
+        uf.unite(a, b)
+        answer += c
+print(answer)
