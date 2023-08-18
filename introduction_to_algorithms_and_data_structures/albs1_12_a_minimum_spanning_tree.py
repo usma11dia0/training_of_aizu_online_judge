@@ -1,5 +1,7 @@
-# question https://atcoder.jp/contests/tessoku-book/tasks/tessoku_book_bo
-# answer https://github.com/E869120/kyopro-tessoku/blob/main/codes/python/chap09/answer_A67.py
+# 参考資料 https://www.youtube.com/watch?v=6D7BoKrq7hA&t=9s 45分近辺
+
+# クラスカルのアルゴリズム：どの辺も選択していない状態からスタートし、重みが小さい辺から順番に追加していって最終的に全域木を作る方法 (貪欲法)
+# ※ただし閉路となる場合は追加しない(木の定理を満たさないため)
 
 # 教訓
 # unite()を実装するために必要なこと
@@ -11,7 +13,7 @@
 #  list.sort() メソッドには引数にkeyを指定することが可能で、比較を行う前にリストの各要素に対して呼び出される関数を指定出来る
 
 # Union-find木を定義
-class unionFind:
+class UnionFind:
     # 初期化
     def __init__(self, n):
         self.n = n  # Union-Find木の頂点の数
@@ -53,7 +55,7 @@ edges.sort(key=lambda x: x[2])  # 比較を行う前にリストの各要素に�
 # リストの各要素xとして、x[2]を指定している。
 
 # 最小全域木を求める
-uf = unionFind(N)
+uf = UnionFind(N)
 answer = 0
 for a, b, c in edges:
     if not uf.same(a, b):  # 頂点a,bがまだ同じ連結成分に属していない場合
