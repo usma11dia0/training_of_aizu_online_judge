@@ -1,18 +1,18 @@
 class UnionFind:
     # n頂点の Union-Find 木を作成
-    def __init__(self, n):  # nには頂点の数Nが入る。
+    def __init__(self, n: int) -> None:  # nには頂点の数Nが入る。
         self.n = n
         self.par = [-1] * (n + 1)  # parは親を示す。-1は全ての頂点に親がいないことを示す。
         self.size = [1] * (n + 1)  # sizeはグループの頂点数。初期値は各グループ頂点1つのため1。
 
     # 頂点xの根を返す
-    def root(self, x):
+    def root(self, x: int) -> int:
         while self.par[x] != -1:
             x = self.par[x]
         return x
 
     # 要素u, vを含むグループを統合
-    def unite(self, u, v):
+    def unite(self, u: int, v: int) -> None:
         root_u = self.root(u)
         root_v = self.root(v)
         if root_u != root_v:
@@ -26,7 +26,7 @@ class UnionFind:
                 self.size[root_u] += self.size[root_v]
 
     #  要素uとvが同一のグループかどうかを判定
-    def same(self, u, v):
+    def same(self, u: int, v: int) -> bool:
         return self.root(u) == self.root(v)
 
 # 入力
