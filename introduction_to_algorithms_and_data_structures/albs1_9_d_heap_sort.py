@@ -1,3 +1,5 @@
+# 参考URL：https://daeudaeu.com/heap-sort/
+
 # 0-indexedで実装
 def max_heapify(A: list, i: int, h: int) -> None:
     left_child_index = 2 * i + 1
