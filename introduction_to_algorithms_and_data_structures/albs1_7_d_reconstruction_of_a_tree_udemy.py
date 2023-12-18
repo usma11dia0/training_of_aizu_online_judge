@@ -102,6 +102,6 @@ postorder(root)
 # ④ 深さを戻した際、root(4).leftに7(root)が入る
 
 
-#inorderのインデックス番号で、preorderの分割ができる理由
-#inorderのインデックス番号 = 左部分木のノードの数
-#preorderからrootの1を除いた1:index+1までの範囲が左部分木であることがわかる。
+# inorderのインデックス番号で、preorderの分割ができる理由
+# inorderのインデックス番号 = 左部分木のノードの数
+# preorderからrootの1を除いた1:index+1までの範囲が左部分木であることがわかる。

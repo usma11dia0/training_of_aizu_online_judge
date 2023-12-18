@@ -61,3 +61,8 @@ while True:
         break
 
 print("\n".join(output))
+
+
+
+# 解説
+# 二分探索木ではない。(left < root < right)
