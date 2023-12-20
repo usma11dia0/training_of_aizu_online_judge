@@ -143,9 +143,7 @@ for _ in range(0, m):
 
 print("\n".join(output))
 
-
-
-
+# 参考解説
 # #右回転の解説
 # rightRotate(Node t) 
 #   Node s = t.left
